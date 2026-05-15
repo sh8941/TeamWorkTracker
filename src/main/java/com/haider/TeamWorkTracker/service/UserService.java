@@ -12,7 +12,7 @@ public class UserService {
     @Autowired
     UserRepo userRepo;
 
-    private UserEntity getUserEntity(Long id){
+    public UserEntity getUserEntity(Long id){
         return userRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException("User not found..."));
     }

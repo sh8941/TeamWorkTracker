@@ -1,11 +1,17 @@
 package com.haider.TeamWorkTracker.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,4 +19,6 @@ public class UserEntity {
     private String username;
     private String password;
     private boolean active;
+    @ManyToMany(mappedBy = "users")
+    private Set<TaskEntity> tasks = new HashSet<>();
 }
