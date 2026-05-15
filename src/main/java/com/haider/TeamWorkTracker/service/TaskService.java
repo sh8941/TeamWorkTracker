@@ -45,10 +45,13 @@ public class TaskService {
         TaskEntity saved =  taskRepo.save(taskEntity);
         TaskResponse taskResponse = new TaskResponse();
         taskResponse.setId(saved.getId());
-        taskResponse.setTitle(taskEntity.getTitle());
-        taskResponse.setDescription(taskEntity.getDescription());
+        taskResponse.setTitle(saved.getTitle());
+        taskResponse.setDescription(saved.getDescription());
         taskResponse.setCreatedBy(saved.getCreatedBy());
         taskResponse.setAssignees(taskRequest.getAssignees());
+        taskResponse.setVisibility(saved.getVisibility());
+        taskResponse.setPriority(saved.getPriority());
+        taskResponse.setStatus(saved.getStatus());
         return taskResponse;
     }
 
@@ -59,6 +62,9 @@ public class TaskService {
         taskResponse.setTitle(taskEntity.getTitle());
         taskResponse.setDescription(taskEntity.getDescription());
         taskResponse.setCreatedBy(taskEntity.getCreatedBy());
+        taskResponse.setVisibility(taskEntity.getVisibility());
+        taskResponse.setPriority(taskEntity.getPriority());
+        taskResponse.setStatus(taskEntity.getStatus());
 
         HashSet<Long> assignees = new HashSet<>();
         taskEntity.getUsers().forEach(a -> assignees.add(a.getId()));

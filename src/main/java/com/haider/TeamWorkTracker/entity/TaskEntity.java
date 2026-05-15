@@ -1,5 +1,8 @@
 package com.haider.TeamWorkTracker.entity;
 
+import com.haider.TeamWorkTracker.enums.Priority;
+import com.haider.TeamWorkTracker.enums.Status;
+import com.haider.TeamWorkTracker.enums.Visibility;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,4 +32,10 @@ public class TaskEntity {
     private Set<UserEntity> users = new HashSet<>();
     private LocalDateTime createdAt;
     private boolean active;
+    @Enumerated(EnumType.STRING)
+    private Priority priority = Priority.MEDIUM;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.PENDING;
+    @Enumerated(EnumType.STRING)
+    private Visibility visibility = Visibility.TEAM;
 }
