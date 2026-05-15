@@ -1,3 +1,11 @@
 spring:
   application:
     name: TeamWorkTracker
+  datasource:
+    url: jdbc:mysql://localhost:3306/TeamWorkTracker
+    hikari:
+      username: root
+      password: 8941
+  jpa:
+    hibernate:
+      ddl-auto: update
