@@ -22,7 +22,7 @@ public class TaskService {
     @Autowired
     private UserService userService;
 
-    private TaskEntity getTaskEntity(Long id) {
+    public TaskEntity getTaskEntity(Long id) {
         return taskRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException("Task not found..."));
     }

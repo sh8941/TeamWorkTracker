@@ -7,7 +7,9 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,4 +40,6 @@ public class TaskEntity {
     private Status status = Status.PENDING;
     @Enumerated(EnumType.STRING)
     private Visibility visibility = Visibility.TEAM;
+    @OneToMany(mappedBy = "task", fetch = FetchType.LAZY)
+    private List<TaskCommentEntity> taskComments = new ArrayList<>();
 }
