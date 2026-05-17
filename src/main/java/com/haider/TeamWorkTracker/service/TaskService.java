@@ -1,5 +1,6 @@
 package com.haider.TeamWorkTracker.service;
 
+import com.haider.TeamWorkTracker.config.SecurityUtils;
 import com.haider.TeamWorkTracker.dtos.request.TaskRequest;
 import com.haider.TeamWorkTracker.dtos.response.TaskResponse;
 import com.haider.TeamWorkTracker.entity.TaskEntity;
@@ -21,6 +22,8 @@ public class TaskService {
     private TaskRepo taskRepo;
     @Autowired
     private UserService userService;
+    @Autowired
+    private SecurityUtils securityUtils;
 
     public TaskEntity getTaskEntity(Long id) {
         return taskRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
@@ -31,7 +34,7 @@ public class TaskService {
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setTitle(taskRequest.getTitle());
         taskEntity.setDescription(taskRequest.getDescription());
-        taskEntity.setCreatedBy(1L);
+        taskEntity.setCreatedBy(securityUtils.getCurrentUser().getId());
         taskEntity.setActive(true);
 
         Set<UserEntity> users = taskRequest.getAssignees()
@@ -77,6 +80,5 @@ public class TaskService {
         TaskEntity taskEntity = getTaskEntity(id);
         taskEntity.setActive(false);
         taskRepo.save(taskEntity);
-        return;
     }
 }

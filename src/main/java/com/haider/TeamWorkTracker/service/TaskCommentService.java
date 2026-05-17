@@ -1,8 +1,8 @@
 package com.haider.TeamWorkTracker.service;
 
+import com.haider.TeamWorkTracker.config.SecurityUtils;
 import com.haider.TeamWorkTracker.dtos.request.TaskCommentRequest;
 import com.haider.TeamWorkTracker.dtos.response.TaskCommentResponse;
-import com.haider.TeamWorkTracker.dtos.response.TaskResponse;
 import com.haider.TeamWorkTracker.entity.TaskCommentEntity;
 import com.haider.TeamWorkTracker.entity.TaskEntity;
 import com.haider.TeamWorkTracker.exception.ResourceNotFoundException;
@@ -17,14 +17,14 @@ public class TaskCommentService {
     @Autowired
     private TaskService taskService;
     @Autowired
-    UserService userService;
+    SecurityUtils securityUtils;
 
     public TaskCommentResponse addComment(TaskCommentRequest taskCommentRequest) {
         TaskCommentEntity taskCommentEntity = new TaskCommentEntity();
         taskCommentEntity.setComment(taskCommentRequest.getComment());
         TaskEntity taskEntity = taskService.getTaskEntity(taskCommentRequest.getTaskId());
         taskCommentEntity.setTask(taskEntity);
-        taskCommentEntity.setUser(userService.getUserEntity(taskCommentRequest.getUserId()));
+        taskCommentEntity.setUser(securityUtils.getCurrentUser());
         taskCommentEntity.setActive(true);
 
         TaskCommentEntity saved = taskCommentRepo.save(taskCommentEntity);
@@ -32,7 +32,7 @@ public class TaskCommentService {
         TaskCommentResponse taskCommentResponse = new TaskCommentResponse();
         taskCommentResponse.setComment(saved.getComment());
         taskCommentResponse.setTaskId(saved.getTask().getId());
-        taskCommentResponse.setUserId(saved.getUser().getId());
+        taskCommentResponse.setUserId(securityUtils.getCurrentUser().getId());
         taskCommentResponse.setId(taskCommentEntity.getId());
 
         return taskCommentResponse;
