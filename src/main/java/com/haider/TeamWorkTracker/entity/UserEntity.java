@@ -20,6 +20,8 @@ public class UserEntity {
     private String username;
     private String password;
     private boolean active;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private RoleEntity role;
     @ManyToMany(mappedBy = "users")
     private Set<TaskEntity> tasks = new HashSet<>();
 }

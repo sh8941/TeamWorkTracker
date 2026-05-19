@@ -67,7 +67,8 @@ public class TaskService {
         TaskEntity taskEntity = getTaskEntity(id);
         UserEntity currentUser = securityUtils.getCurrentUser();
 
-        if (! taskEntity.getCreatedBy().getId().equals(currentUser.getId())) {
+        if (! taskEntity.getCreatedBy().getId().equals(currentUser.getId()) &&
+        ! currentUser.getRole().getRoleName().equals("ADMIN")) {
             throw new UnauthorizedException("You are not allowed to access this task");
         }
 
@@ -90,7 +91,8 @@ public class TaskService {
         UserEntity currentUser = securityUtils.getCurrentUser();
         TaskEntity taskEntity = getTaskEntity(id);
 
-        if (! taskEntity.getCreatedBy().getId().equals(currentUser.getId())) {
+        if (! taskEntity.getCreatedBy().getId().equals(currentUser.getId()) &&
+        ! currentUser.getRole().getRoleName().equals("ADMIN")) {
             throw new UnauthorizedException("You are not allowed to delete this task");
         }
 
@@ -100,7 +102,7 @@ public class TaskService {
 
     public List<TaskResponse> getMyTasks() {
         UserEntity userEntity = securityUtils.getCurrentUser();
-        List<TaskEntity> taskEntities = taskRepo.findAllByCreatedBy(userEntity.getId());
+        List<TaskEntity> taskEntities = taskRepo.findAllByCreatedById(userEntity.getId());
         List<TaskResponse> taskResponses = new ArrayList<>();
         taskEntities.forEach(taskEntity -> {
             taskResponses.add(toResponse(taskEntity));

@@ -17,6 +17,8 @@ public class UserService {
     private SecurityUtils securityUtils;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    RoleService roleService;
 
     public UserEntity getUserEntity(Long id){
         return userRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
@@ -33,6 +35,7 @@ public class UserService {
         userEntity.setUsername(username);
         userEntity.setPassword(passwordEncoder.encode(password));
         userEntity.setActive(true);
+        userEntity.setRole(roleService.findByRoleId(2L));
         UserEntity saved = userRepo.save(userEntity);
         UserResponse userResponse = new UserResponse();
         userResponse.setId(saved.getId());
