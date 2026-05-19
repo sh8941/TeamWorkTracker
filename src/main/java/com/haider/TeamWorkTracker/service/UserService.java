@@ -20,7 +20,7 @@ public class UserService {
 
     public UserEntity getUserEntity(Long id){
         return userRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
-                new ResourceNotFoundException("User not found..."));
+                new ResourceNotFoundException("trying to assign invalid user :"+id));
     }
 
     public UserEntity getUserEntity(String username){

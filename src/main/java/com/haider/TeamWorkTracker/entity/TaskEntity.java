@@ -1,5 +1,6 @@
 package com.haider.TeamWorkTracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.haider.TeamWorkTracker.enums.Priority;
 import com.haider.TeamWorkTracker.enums.Status;
 import com.haider.TeamWorkTracker.enums.Visibility;
@@ -24,7 +25,8 @@ public class TaskEntity {
     private Long id;
     private String title;
     private String description;
-    private Long createdBy;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity createdBy;
     @ManyToMany
     @JoinTable(
             name = "task_users",

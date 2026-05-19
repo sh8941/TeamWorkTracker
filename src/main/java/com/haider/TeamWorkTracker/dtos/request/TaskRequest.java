@@ -8,6 +8,5 @@ import java.util.Set;
 public class TaskRequest {
     private String title;
     private String description;
-    private Long createdBy;
     private Set<Long> assignees;
 }

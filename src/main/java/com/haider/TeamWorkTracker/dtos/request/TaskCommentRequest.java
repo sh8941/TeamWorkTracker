@@ -12,5 +12,4 @@ import lombok.Setter;
 public class TaskCommentRequest {
     String comment;
     Long taskId;
-    Long userId;
 }
