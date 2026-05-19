@@ -6,6 +6,7 @@ import com.haider.TeamWorkTracker.dtos.response.TaskCommentResponse;
 import com.haider.TeamWorkTracker.entity.TaskCommentEntity;
 import com.haider.TeamWorkTracker.entity.TaskEntity;
 import com.haider.TeamWorkTracker.entity.UserEntity;
+import com.haider.TeamWorkTracker.enums.Visibility;
 import com.haider.TeamWorkTracker.exception.ResourceNotFoundException;
 import com.haider.TeamWorkTracker.exception.UnauthorizedException;
 import com.haider.TeamWorkTracker.repo.TaskCommentRepo;
@@ -24,9 +25,17 @@ public class TaskCommentService {
     public TaskCommentResponse addComment(TaskCommentRequest taskCommentRequest) {
         TaskCommentEntity taskCommentEntity = new TaskCommentEntity();
         taskCommentEntity.setComment(taskCommentRequest.getComment());
+        UserEntity currentUser = securityUtils.getCurrentUser();
         TaskEntity taskEntity = taskService.getTaskEntity(taskCommentRequest.getTaskId());
+
+        if (! taskEntity.getCreatedBy().getId().equals(currentUser.getId()) &&
+        ! taskEntity.getVisibility().equals(Visibility.PUBLIC) &&
+        ! taskEntity.getUsers().contains(currentUser)) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
         taskCommentEntity.setTask(taskEntity);
-        taskCommentEntity.setUser(securityUtils.getCurrentUser());
+        taskCommentEntity.setUser(currentUser);
         taskCommentEntity.setActive(true);
 
         TaskCommentEntity saved = taskCommentRepo.save(taskCommentEntity);
@@ -43,9 +52,11 @@ public class TaskCommentService {
     public TaskCommentEntity getTaskCommentEntityById(Long id) {
         TaskCommentEntity taskCommentEntity = taskCommentRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
                 new ResourceNotFoundException("TaskComment not found with id: " + id));
-        UserEntity userEntity = securityUtils.getCurrentUser();
+        UserEntity currentUser = securityUtils.getCurrentUser();
 
-        if (! taskCommentEntity.getUser().equals(userEntity)) {
+        if (! taskCommentEntity.getTask().getCreatedBy().getId().equals(currentUser.getId()) &&
+                ! taskCommentEntity.getTask().getVisibility().equals(Visibility.PUBLIC) &&
+                ! taskCommentEntity.getTask().getUsers().contains(currentUser)) {
             throw new UnauthorizedException("Unauthorized");
         }
 
@@ -53,7 +64,7 @@ public class TaskCommentService {
 
         taskCommentResponse.setComment(taskCommentEntity.getComment());
         taskCommentResponse.setTaskId(taskCommentEntity.getTask().getId());
-        taskCommentResponse.setUserId(securityUtils.getCurrentUser().getId());
+        taskCommentResponse.setUserId(currentUser.getId());
         taskCommentResponse.setId(taskCommentEntity.getId());
 
         return taskCommentEntity;
@@ -61,6 +72,12 @@ public class TaskCommentService {
 
     public TaskCommentResponse getById(Long id) {
         TaskCommentEntity taskCommentEntity = getTaskCommentEntityById(id);
+        UserEntity currentUser = securityUtils.getCurrentUser();
+        if (! taskCommentEntity.getUser().getId().equals(currentUser.getId()) &&
+        ! currentUser.getRole().getRoleName().equals("ADMIN")) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
         TaskCommentResponse taskCommentResponse = new TaskCommentResponse();
         taskCommentResponse.setComment(taskCommentEntity.getComment());
         taskCommentResponse.setTaskId(taskCommentEntity.getTask().getId());
@@ -72,10 +89,13 @@ public class TaskCommentService {
 
     public void deleteBy(Long id) {
         TaskCommentEntity taskCommentEntity = getTaskCommentEntityById(id);
-        UserEntity userEntity = securityUtils.getCurrentUser();
-        if (! taskCommentEntity.getUser().equals(userEntity)) {
+        UserEntity currentUser = securityUtils.getCurrentUser();
+
+        if (! taskCommentEntity.getUser().getId().equals(currentUser.getId()) &&
+                ! currentUser.getRole().getRoleName().equals("ADMIN")) {
             throw new UnauthorizedException("Unauthorized");
         }
+
         taskCommentEntity.setActive(false);
         taskCommentRepo.save(taskCommentEntity);
     }
