@@ -5,5 +5,5 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-profile:
-  active: docker
+  profile:
+    active: docker
