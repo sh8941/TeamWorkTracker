@@ -33,7 +33,8 @@ public class SecurityConfig {
                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                 .requestMatchers(
                                 "/api/auth/**",
-                                        "/user").permitAll()
+                                        "/user",
+                                        "/health").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
