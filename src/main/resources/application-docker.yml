@@ -3,3 +3,4 @@ spring:
     url: jdbc:mysql://mysql:3306/TeamWorkTracker?allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver

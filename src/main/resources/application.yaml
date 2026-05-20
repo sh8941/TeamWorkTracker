@@ -2,8 +2,9 @@ spring:
   application:
     name: TeamWorkTracker
 
+  profiles:
+    active: docker
+
   jpa:
     hibernate:
       ddl-auto: update
-  profile:
-    active: docker
