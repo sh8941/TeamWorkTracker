@@ -20,7 +20,8 @@ public class UserController {
 
     @Operation(summary = "To register a new user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User registered")
+            @ApiResponse(responseCode = "200", description = "User registered"),
+            @ApiResponse(responseCode = "400", description = "Bad request")
     })
     @PostMapping
     public ResponseEntity<UserResponse> addUser(@RequestBody UserRequest userRequest){

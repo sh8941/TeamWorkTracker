@@ -3,7 +3,9 @@ package com.haider.TeamWorkTracker.service;
 import com.haider.TeamWorkTracker.config.SecurityUtils;
 import com.haider.TeamWorkTracker.dtos.response.UserResponse;
 import com.haider.TeamWorkTracker.entity.UserEntity;
+import com.haider.TeamWorkTracker.exception.BadRequestException;
 import com.haider.TeamWorkTracker.exception.ResourceNotFoundException;
+import com.haider.TeamWorkTracker.exception.UsernameAlreadyExistsException;
 import com.haider.TeamWorkTracker.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,8 +23,9 @@ public class UserService {
     RoleService roleService;
 
     public UserEntity getUserEntity(Long id){
-        return userRepo.findByIdAndActiveTrue(id).orElseThrow(() ->
-                new ResourceNotFoundException("trying to assign invalid user :"+id));
+    return userRepo
+        .findByIdAndActiveTrue(id)
+        .orElseThrow(() -> new BadRequestException("trying to assign invalid user :" + id));
     }
 
     public UserEntity getUserEntity(String username){
@@ -31,6 +34,11 @@ public class UserService {
     }
 
     public UserResponse addUser(String username, String password) {
+
+        if (userRepo.findByUsername(username).isPresent()) {
+            throw new UsernameAlreadyExistsException("Username already exists");
+        }
+
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setPassword(passwordEncoder.encode(password));
